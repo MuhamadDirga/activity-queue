@@ -5,6 +5,7 @@ const urlsToCache = [
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
+  'https://script.google.com/macros/s/AKfycbyiZ2xFar7JmuA_ESlkeFc7De6GbLVqgUSDouHWnd0/dev',
 ];
 
 self.addEventListener("install", event => {
