@@ -1,6 +1,6 @@
 {
-    "name": "Aplikasi PWA",
-    "short_name": "Aplikasi PWA",
+    "name": "Aplikasi Queue Activity",
+    "short_name": "Queue Activity",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#f0f0f0",
