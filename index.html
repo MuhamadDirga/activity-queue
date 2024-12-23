@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Aplikasi Queue Activity</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+        .red-text {
+            color: red;
+        }
+        .btn-red {
+            background-color: red;
+            color: white;
+            border: none;
+        }
+        .btn-red:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100">
+    <div class="text-center">
+        <h2 class="mb-4">
+            Selamat Datang di Aplikasi
+            <span class="red-text">Queue Activity</span>
+        </h2>
+        <a href="https://script.google.com/macros/s/AKfycbyiZ2xFar7JmuA_ESlkeFc7De6GbLVqgUSDouHWnd0/dev" 
+           class="btn btn-red btn-lg">
+           Masuk Login
+        </a>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
