@@ -30,10 +30,9 @@
             Selamat Datang di Aplikasi
             <span class="red-text">Queue Activity</span>
         </h2>
-        <a href="https://script.google.com/macros/s/AKfycbyiZ2xFar7JmuA_ESlkeFc7De6GbLVqgUSDouHWnd0/dev" 
-           class="btn btn-red btn-lg">
-           Masuk Login
-        </a>
+        <button class="btn btn-red btn-lg" id="loginButton">
+            Masuk Login
+        </button>
     </div>
 
     <script>
@@ -48,6 +47,10 @@
                     });
             });
         }
+
+        document.getElementById('loginButton').addEventListener('click', function() {
+            window.location.href = 'https://script.google.com/macros/s/AKfycbyiZ2xFar7JmuA_ESlkeFc7De6GbLVqgUSDouHWnd0/dev';
+        });
     </script>
 </body>
 </html>
