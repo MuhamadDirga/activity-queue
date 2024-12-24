@@ -9,7 +9,7 @@ const urlsToCache = [
 
 // Tambahkan URL eksternal yang sering digunakan
 const externalUrls = [
-    'https://script.google.com/macros/s/AKfycbxdivtQioU3j1TmBDtU76De6jr3iXk_5UbXLVvaKHWwT4PjOFWRIvkM2UfF_b8em80/exec'
+    'https://script.google.com/macros/s/AKfycbzP7ZD7LQ9bYvwwXMzO-ryGYGH0xmeZbIh-PJEeTTnOFalwzxCzem4ERwzwYtOx8sTI/exec'
 ];
 
 // Install Service Worker

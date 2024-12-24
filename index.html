@@ -19,7 +19,7 @@
     </style>
 </head>
 <body>
-    <iframe id="app-frame" src="https://script.google.com/macros/s/AKfycbxdivtQioU3j1TmBDtU76De6jr3iXk_5UbXLVvaKHWwT4PjOFWRIvkM2UfF_b8em80/exec" allowfullscreen></iframe>
+    <iframe id="app-frame" src="https://script.google.com/macros/s/AKfycbzP7ZD7LQ9bYvwwXMzO-ryGYGH0xmeZbIh-PJEeTTnOFalwzxCzem4ERwzwYtOx8sTI/exec" allowfullscreen></iframe>
 
     <script>
         const iframe = document.getElementById("app-frame");
@@ -46,7 +46,7 @@
             const activeParam = new URLSearchParams(window.location.search).get("active");
             if (activeParam) {
                 // Update iframe URL to match the current browser state
-                iframe.src = `https://script.google.com/macros/s/AKfycbxdivtQioU3j1TmBDtU76De6jr3iXk_5UbXLVvaKHWwT4PjOFWRIvkM2UfF_b8em80/exec?active=${encodeURIComponent(activeParam)}`;
+                iframe.src = `https://script.google.com/macros/s/AKfycbzP7ZD7LQ9bYvwwXMzO-ryGYGH0xmeZbIh-PJEeTTnOFalwzxCzem4ERwzwYtOx8sTI/exec?active=${encodeURIComponent(activeParam)}`;
             }
         });
 
