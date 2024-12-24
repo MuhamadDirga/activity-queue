@@ -35,7 +35,6 @@
                     // Update browser URL without reloading
                     history.pushState(null, "", `/?active=${encodeURIComponent(activeParam)}`);
                     console.log(activeParam);
-
                 }
             } catch (error) {
                 console.error("Unable to access iframe URL:", error);
@@ -48,6 +47,31 @@
             if (activeParam) {
                 // Update iframe URL to match the current browser state
                 iframe.src = `https://script.google.com/macros/s/AKfycbxdivtQioU3j1TmBDtU76De6jr3iXk_5UbXLVvaKHWwT4PjOFWRIvkM2UfF_b8em80/exec?active=${encodeURIComponent(activeParam)}`;
+            }
+        });
+
+        // Menerima pesan dari iframe (Google Apps Script)
+        window.addEventListener("message", function(event) {
+            // Validasi asal pesan untuk memastikan pesan datang dari domain yang diizinkan
+            if (event.origin === "https://script.google.com") {
+                const userData = event.data;
+                console.log("Received user data:", userData);
+
+                // Perbarui URL browser sesuai dengan parameter active
+                if (userData.active) {
+                    history.pushState(null, "", `/?active=${encodeURIComponent(userData.active)}`);
+                }
+
+                // Tampilkan data atau perbarui UI sesuai dengan role pengguna
+                if (userData.role === "admin") {
+                    console.log("User is admin");
+                    // Tindakan untuk admin (misalnya menampilkan menu admin)
+                    // Anda bisa menambahkan logika untuk admin di sini
+                } else if (userData.role === "user") {
+                    console.log("User is a regular user");
+                    // Tindakan untuk user biasa (misalnya menampilkan tampilan pengguna)
+                    // Anda bisa menambahkan logika untuk user di sini
+                }
             }
         });
     </script>
