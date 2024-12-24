@@ -1,3 +1,5 @@
+const CACHE_NAME = 'activity-queue-cache-v1';
+
 const urlsToCache = [
     '/',
     '/index.html',
@@ -5,7 +7,7 @@ const urlsToCache = [
     '/favicon.png'
 ];
 
-// Tambahkan URL eksternal (Google Apps Script)
+// Tambahkan URL eksternal yang sering digunakan
 const externalUrls = [
     'https://script.google.com/macros/s/AKfycbxdivtQioU3j1TmBDtU76De6jr3iXk_5UbXLVvaKHWwT4PjOFWRIvkM2UfF_b8em80/exec'
 ];
@@ -13,11 +15,10 @@ const externalUrls = [
 // Install Service Worker
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Opened cache');
-                return cache.addAll([...urlsToCache, ...externalUrls]);
-            })
+        caches.open(CACHE_NAME).then(cache => {
+            console.log('Opened cache');
+            return cache.addAll([...urlsToCache, ...externalUrls]);
+        })
     );
 });
 
@@ -39,28 +40,38 @@ self.addEventListener('activate', event => {
 
 // Fetch Event Listener
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            // Cache hit - return the response
-            if (response) {
-                return response;
-            }
+    const requestUrl = new URL(event.request.url);
 
-            // Fetch from network if not in cache
-            return fetch(event.request).then(networkResponse => {
-                // Cache the new response
-                if (event.request.url.startsWith('https://script.google.com')) {
+    // Handle requests to Google Apps Script
+    if (requestUrl.origin === 'https://script.google.com') {
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                // Cache hit - return the cached response
+                if (response) {
+                    return response;
+                }
+
+                // Fetch from network if not in cache
+                return fetch(event.request).then(networkResponse => {
                     return caches.open(CACHE_NAME).then(cache => {
+                        // Cache the new response dynamically
                         cache.put(event.request, networkResponse.clone());
                         return networkResponse;
                     });
-                }
+                }).catch(error => {
+                    console.error('Fetching failed:', error);
+                    // Optional: Return a fallback response here
+                    throw error;
+                });
+            })
+        );
+        return;
+    }
 
-                return networkResponse;
-            }).catch(error => {
-                console.error('Fetching failed:', error);
-                throw error;
-            });
+    // Handle other requests
+    event.respondWith(
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request);
         })
     );
 });
