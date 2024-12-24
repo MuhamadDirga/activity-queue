@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>01OneMoto PWA</title>
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
     <style>
         html, body {
             margin: 0;
@@ -18,6 +19,21 @@
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbxdivtQioU3j1TmBDtU76De6jr3iXk_5UbXLVvaKHWwT4PjOFWRIvkM2UfF_b8em80/exec" allowfullscreen></iframe>
+    <iframe src="https://script.google.com/macros/s/AKfycbyiZ2xFar7JmuA_ESlkeFc7De6GbLVqgUSDouHWnd0/dev" allowfullscreen></iframe>
 </body>
+<script>
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+</script>
 </html>
