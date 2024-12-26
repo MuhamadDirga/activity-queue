@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Aplikasi PWA';
+const CACHE_NAME = 'PWA-QUEUE-ACTIVITY-V04';
 const urlsToCache = [
   '/',
   '/index.html',
