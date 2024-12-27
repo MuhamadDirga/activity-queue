@@ -20,10 +20,45 @@
     <title>Queue Activity</title>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbyEPUKHfTwC7xffLGwlvXYr1dPzLQyyt1fsljm-FfBby2zzvw-VvpcbornmlBVCvz_3/exec" allowfullscreen></iframe>
-</body>
-<script>
+    <!-- Iframe untuk menampilkan URL -->
+    <iframe id="dynamicIframe" allowfullscreen></iframe>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // Konfigurasi Supabase
+        const supabaseUrl = 'https://lukqiyskvaeuqxtpkwax.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1a3FpeXNrdmFldXF4dHBrd2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUyNjYyMjQsImV4cCI6MjA1MDg0MjIyNH0.XmhdROadlZ4aopafJS0LEE8Vy0WBHS4pgxEgWrFo36E';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function loadIframeUrl() {
+            try {
+                // URL domain saat ini
+                const currentTarget = window.location.origin;
+
+                // Ambil data dari tabel Supabase
+                const { data, error } = await supabase
+                    .from('urls')
+                    .select('reurl')
+                    .eq('target', currentTarget)
+                    .single();
+
+                if (error) {
+                    console.error('Gagal mengambil data:', error);
+                } else if (data && data.reurl) {
+                    // Set URL ke iframe
+                    document.getElementById('dynamicIframe').src = data.reurl;
+                } else {
+                    console.error('URL tidak ditemukan untuk target:', currentTarget);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        loadIframeUrl();
+
+        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -35,6 +70,6 @@
                     });
             });
         }
-
-</script>
+    </script>
+</body>
 </html>
