@@ -35,6 +35,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
+    // Abaikan permintaan dengan skema yang tidak didukung
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        return;
+    }
+
     // Caching untuk permintaan ke Supabase
     if (url.origin === 'https://lukqiyskvaeuqxtpkwax.supabase.co') {
         event.respondWith(
@@ -59,8 +64,8 @@ self.addEventListener('fetch', event => {
                 return fetchResponse;
             })
         );
-    }
-    // Default: caching untuk semua file statis lainnya (termasuk CDN)
+    } 
+    // Default: caching untuk semua file statis lainnya
     else {
         event.respondWith(
             caches.match(event.request).then(response => {
