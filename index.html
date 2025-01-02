@@ -20,22 +20,30 @@
     <title>Queue Activity</title>
 </head>
 <body>
-    <!-- Iframe untuk menampilkan URL -->
+    
     <iframe id="dynamicIframe" allowfullscreen></iframe>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        // Konfigurasi Supabase
+
         const supabaseUrl = 'https://lukqiyskvaeuqxtpkwax.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1a3FpeXNrdmFldXF4dHBrd2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUyNjYyMjQsImV4cCI6MjA1MDg0MjIyNH0.XmhdROadlZ4aopafJS0LEE8Vy0WBHS4pgxEgWrFo36E';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadIframeUrl() {
             try {
-                // URL domain saat ini
                 const currentTarget = window.location.origin;
+                const cacheKey = `/fetch-reurl?target=${currentTarget}`;
 
-                // Ambil data dari tabel Supabase
+                const cachedResponse = await caches.match(cacheKey);
+                if (cachedResponse) {
+                    const cachedData = await cachedResponse.json();
+                    if (cachedData && cachedData.reurl) {
+                        document.getElementById('dynamicIframe').src = cachedData.reurl;
+                        return;
+                    }
+                }
+
                 const { data, error } = await supabase
                     .from('urls')
                     .select('reurl')
@@ -45,7 +53,13 @@
                 if (error) {
                     console.error('Gagal mengambil data:', error);
                 } else if (data && data.reurl) {
-                    // Set URL ke iframe
+
+                    const cache = await caches.open('PWA-QUEUE-ACTIVITY-V04');
+                    const response = new Response(JSON.stringify(data), {
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+                    await cache.put(cacheKey, response);
+
                     document.getElementById('dynamicIframe').src = data.reurl;
                 } else {
                     console.error('URL tidak ditemukan untuk target:', currentTarget);
@@ -55,10 +69,8 @@
             }
         }
 
-        // Panggil fungsi saat halaman dimuat
         loadIframeUrl();
 
-        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -66,7 +78,7 @@
                         console.log('Service Worker registered with scope:', registration.scope);
                     })
                     .catch(error => {
-                        console.log('Service Worker registration failed:', error);
+                        console.error('Service Worker registration failed:', error);
                     });
             });
         }
