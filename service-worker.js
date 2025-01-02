@@ -60,8 +60,8 @@ self.addEventListener('fetch', event => {
             })
         );
     }
-    // Caching untuk file statis dan CDN
-    else if (url.href === 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js') {
+    // Default: caching untuk semua file statis lainnya (termasuk CDN)
+    else {
         event.respondWith(
             caches.match(event.request).then(response => {
                 return response || fetch(event.request).then(fetchResponse => {
@@ -70,14 +70,6 @@ self.addEventListener('fetch', event => {
                         return fetchResponse;
                     });
                 });
-            })
-        );
-    }
-    // Default: caching untuk file statis lainnya
-    else {
-        event.respondWith(
-            caches.match(event.request).then(response => {
-                return response || fetch(event.request);
             })
         );
     }
