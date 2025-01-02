@@ -55,10 +55,14 @@ self.addEventListener('fetch', event => {
 
                 // Ambil data dari jaringan jika cache sudah kedaluwarsa
                 const fetchResponse = await fetch(event.request);
+                const responseClone = fetchResponse.clone(); // Salin respons sebelum dipakai
                 const headers = new Headers(fetchResponse.headers);
                 headers.append('sw-fetched-time', new Date().toISOString());
-                const response = new Response(fetchResponse.body, { headers });
+                const response = new Response(responseClone.body, { headers });
+
+                // Simpan respons ke cache
                 cache.put(event.request, response.clone());
+
                 return fetchResponse;
             })
         );
