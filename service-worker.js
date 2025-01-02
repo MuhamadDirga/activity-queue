@@ -5,12 +5,12 @@ const urlsToCache = [
     '/manifest.json',
     '/icons/icon-192x192.png',
     '/icons/icon-512x512.png',
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js',
 ];
 
 self.addEventListener("install", event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-        .then(cache => {
+        caches.open(CACHE_NAME).then(cache => {
             return cache.addAll(urlsToCache);
         })
     );
@@ -35,19 +35,22 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
+    // Caching untuk permintaan ke Supabase
     if (url.origin === 'https://lukqiyskvaeuqxtpkwax.supabase.co') {
         event.respondWith(
             caches.open(CACHE_NAME).then(async cache => {
                 const cachedResponse = await cache.match(event.request);
                 const now = Date.now();
 
+                // Gunakan cache jika belum kadaluarsa
                 if (cachedResponse) {
                     const cachedTime = new Date(cachedResponse.headers.get('sw-fetched-time'));
-                    if (now - cachedTime.getTime() < 1 * 60 * 60 * 1000) {
+                    if (now - cachedTime.getTime() < 1 * 60 * 60 * 1000) { // Cache 1 jam
                         return cachedResponse;
                     }
                 }
 
+                // Ambil data dari jaringan jika cache sudah kedaluwarsa
                 const fetchResponse = await fetch(event.request);
                 const headers = new Headers(fetchResponse.headers);
                 headers.append('sw-fetched-time', new Date().toISOString());
@@ -56,7 +59,22 @@ self.addEventListener('fetch', event => {
                 return fetchResponse;
             })
         );
-    } else {
+    }
+    // Caching untuk file statis dan CDN
+    else if (url.href === 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js') {
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                return response || fetch(event.request).then(fetchResponse => {
+                    return caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, fetchResponse.clone());
+                        return fetchResponse;
+                    });
+                });
+            })
+        );
+    }
+    // Default: caching untuk file statis lainnya
+    else {
         event.respondWith(
             caches.match(event.request).then(response => {
                 return response || fetch(event.request);
