@@ -8,6 +8,7 @@ const urlsToCache = [
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js',
 ];
 
+// Install Service Worker dan cache file statis
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
@@ -17,6 +18,7 @@ self.addEventListener("install", event => {
     self.skipWaiting();
 });
 
+// Aktivasi Service Worker dan hapus cache lama
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -32,22 +34,18 @@ self.addEventListener('activate', event => {
     self.clients.claim();
 });
 
+// Tangani permintaan fetch dengan caching dan refresh data
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    // Abaikan permintaan dengan skema yang tidak didukung
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-        return;
-    }
-
-    // Caching untuk permintaan ke Supabase
+    // Caching untuk permintaan ke Supabase (dengan pengecekan kadaluarsa cache)
     if (url.origin === 'https://lukqiyskvaeuqxtpkwax.supabase.co') {
         event.respondWith(
             caches.open(CACHE_NAME).then(async cache => {
                 const cachedResponse = await cache.match(event.request);
                 const now = Date.now();
 
-                // Gunakan cache jika belum kadaluarsa
+                // Gunakan cache jika belum kadaluarsa (1 jam)
                 if (cachedResponse) {
                     const cachedTime = new Date(cachedResponse.headers.get('sw-fetched-time'));
                     if (now - cachedTime.getTime() < 1 * 60 * 60 * 1000) { // Cache 1 jam
@@ -64,9 +62,9 @@ self.addEventListener('fetch', event => {
                 return fetchResponse;
             })
         );
-    } 
-    // Default: caching untuk semua file statis lainnya
-    else {
+    }
+    // Default: caching untuk file statis dan CDN
+    else if (url.protocol === 'http:' || url.protocol === 'https:') {
         event.respondWith(
             caches.match(event.request).then(response => {
                 return response || fetch(event.request).then(fetchResponse => {
