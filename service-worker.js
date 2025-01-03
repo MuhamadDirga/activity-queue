@@ -34,24 +34,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    if (url.pathname === '/' || url.pathname.startsWith('/icons/') || url.pathname === '/manifest.json') {
-        event.respondWith(
-            caches.match(event.request).then(response => {
-                return response || fetch(event.request).then(fetchResponse => {
-                    return caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, fetchResponse.clone());
-                        return fetchResponse;
-                    });
-                });
-            })
-        );
-    }
-    else if (url.pathname.startsWith('/api/')) {
-        event.respondWith(
-            fetch(event.request)
-        );
-    }
-    else {
+    if (url.protocol === 'http:' || url.protocol === 'https:') {
         event.respondWith(
             caches.match(event.request).then(response => {
                 return response || fetch(event.request).then(fetchResponse => {
