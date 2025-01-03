@@ -28,7 +28,7 @@
         async function loadIframeUrl() {
             try {
                 const currentTarget = window.location.origin;
-                const cacheKey = `/fetch-reurl?target=${currentTarget}`;
+                const cacheKey = `/re-url?target=${currentTarget}`;
 
                 const cachedResponse = await caches.match(cacheKey);
                 if (cachedResponse) {
