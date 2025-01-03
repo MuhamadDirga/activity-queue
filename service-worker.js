@@ -37,8 +37,27 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    // Default: caching for static files and CDN
-    if (url.protocol === 'http:' || url.protocol === 'https:') {
+    // Only cache static files (e.g., images, HTML, JS, CSS)
+    if (url.pathname === '/' || url.pathname.startsWith('/icons/') || url.pathname === '/manifest.json') {
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                return response || fetch(event.request).then(fetchResponse => {
+                    return caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, fetchResponse.clone());
+                        return fetchResponse;
+                    });
+                });
+            })
+        );
+    }
+    // Skip caching for dynamic API calls (e.g., /api/re-url)
+    else if (url.pathname.startsWith('/api/')) {
+        event.respondWith(
+            fetch(event.request) // No caching for API calls
+        );
+    }
+    // Default: handle all other requests normally (e.g., caching for CDN, other assets)
+    else {
         event.respondWith(
             caches.match(event.request).then(response => {
                 return response || fetch(event.request).then(fetchResponse => {
