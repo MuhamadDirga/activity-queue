@@ -1,9 +1,9 @@
 let spinnerTimerInterval;
 let spinnerSeconds = 0;
 
-const skipTimerMessages = ['login', 'logout'];
+const skipTimerMessages = ['login', 'logout', 'memuat halaman'];
 
-function showLoadingSpinner(message = 'Memuat data') {
+function showLoadingSpinner(message = 'Memuat Halaman') {
   document.getElementById('loading-spinner').style.display = 'flex';
   document.getElementById('spinner-message').innerText = message;
 
