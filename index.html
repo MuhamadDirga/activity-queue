@@ -29,35 +29,27 @@
 
     <script>
 
-        async function loadIframeUrl() {
+    async function loadIframeUrl() {
             try {
                 const currentTarget = window.location.origin;
                 const cacheKey = `/re-url?target=${currentTarget}`;
 
-                const cachedResponse = await caches.match(cacheKey);
-                if (cachedResponse) {
-                    const cachedData = await cachedResponse.json();
-                    if (cachedData && cachedData.reurl) {
-                        document.getElementById('dynamicIframe').src = cachedData.reurl;
-                        return;
-                    }
-                }
+                const cache = await caches.open('PWA-QUEUE-ACTIVITY-V04');
+                await cache.delete(cacheKey);
 
                 const response = await fetch(`https://urlmypwa.01onemoto.shop/api/re-url?target=${currentTarget}`);
-                    if (!response.ok) {
+                if (!response.ok) {
                     throw new Error('Gagal mengambil data dari server');
                 }
 
                 const data = await response.json();
-                    
-                if (data && data.reurl) {
 
-                    const cache = await caches.open('PWA-QUEUE-ACTIVITY-V04');
-                    const response = new Response(JSON.stringify(data), {
+                if (data && data.reurl) {
+                    const newResponse = new Response(JSON.stringify(data), {
                         headers: { 'Content-Type': 'application/json' },
                     });
-                    await cache.put(cacheKey, response);
 
+                    await cache.put(cacheKey, newResponse);
                     document.getElementById('dynamicIframe').src = data.reurl;
                 } else {
                     console.error('URL tidak ditemukan untuk target:', currentTarget);
@@ -67,7 +59,7 @@
             }
         }
 
-        loadIframeUrl();
+    loadIframeUrl();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
