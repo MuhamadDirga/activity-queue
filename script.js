@@ -3,7 +3,7 @@ let spinnerSeconds = 0;
 
 const skipTimerMessages = ['login', 'logout', 'memuat halaman'];
 
-function showLoadingSpinner(message = 'Memuat Halaman') {
+function showLoadingSpinner(message = '') {
   document.getElementById('loading-spinner').style.display = 'flex';
   document.getElementById('spinner-message').innerText = message;
 
@@ -39,7 +39,7 @@ async function clearCache() {
 
 async function loadIframeUrl() {
   try {
-    showLoadingSpinner('Memuat data');
+    showLoadingSpinner('Memuat Halaman');
 
     await clearCache();
     const currentTarget = window.location.origin;
