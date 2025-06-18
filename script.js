@@ -44,7 +44,7 @@ async function loadIframeUrl() {
     await clearCache();
     const currentTarget = window.location.origin;
 
-    const response = await fetch(`https://urlmypwa.01onemoto.shop/api/re-url?target=${currentTarget}`);
+    const response = await fetch(`https://url.onemoto.shop/api/re-url?target=${currentTarget}`);
     if (!response.ok) {
       throw new Error('Gagal mengambil data dari server');
     }
