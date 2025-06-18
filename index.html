@@ -1,161 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/favicon.png" type="image/x-icon">
-    <link rel="manifest" href="manifest.json">
-    <style>
-        html, body {
-            margin: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1050;
-        }
-
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #000;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        .spinner-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .spinner-text {
-            font-size: 16px;
-            color: #000;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-    <title>Penilaian Karyawan ICM</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.png" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Penilaian Karyawan ICM</title>
 </head>
 <body>
 
-    <div id="loading-spinner" class="spinner-overlay">
-        <div class="spinner-container">
-          <div class="spinner"></div>
-          <div class="spinner-text">
-            <span id="spinner-message"></span> <span id="spinner-timer"></span>
-          </div>
-        </div>
+  <!-- Spinner -->
+  <div id="loading-spinner" class="spinner-overlay">
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <div class="spinner-text">
+        <span id="spinner-message"></span> <span id="spinner-timer"></span>
       </div>
+    </div>
+  </div>
 
-    <iframe
+  <!-- Iframe -->
+  <iframe
     id="dynamicIframe"
     allow="accelerometer; autoplay; camera; clipboard-read; clipboard-write; encrypted-media; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; payment; usb; vr; screen-wake-lock; web-share"
     allowfullscreen
-    ></iframe>
+  ></iframe>
 
-    <script>
-        let spinnerTimerInterval;
-        let spinnerSeconds = 0;
-    
-        const skipTimerMessages = ['login', 'logout'];
-    
-        function showLoadingSpinner(message = 'Memuat data') {
-          document.getElementById('loading-spinner').style.display = 'flex';
-          document.getElementById('spinner-message').innerText = message;
-    
-          clearInterval(spinnerTimerInterval);
-    
-          if (skipTimerMessages.includes(message.toLowerCase())) {
-            document.getElementById('spinner-timer').innerText = '';
-            return;
-          }
-    
-          spinnerSeconds = 0;
-          document.getElementById('spinner-timer').innerText = '0 Detik';
-    
-          spinnerTimerInterval = setInterval(() => {
-            spinnerSeconds++;
-            document.getElementById('spinner-timer').innerText = spinnerSeconds + ' Detik';
-          }, 1000);
-        }
-    
-        function hideLoadingSpinner() {
-          document.getElementById('loading-spinner').style.display = 'none';
-          clearInterval(spinnerTimerInterval);
-        }
-    
-        async function clearCache() {
-          if ('caches' in window) {
-            const cacheNames = await caches.keys();
-            for (const name of cacheNames) {
-              await caches.delete(name);
-            }
-          }
-        }
-    
-        async function loadIframeUrl() {
-          try {
-            showLoadingSpinner('Memuat data');
-    
-            await clearCache();
-            const currentTarget = window.location.origin;
-    
-            const response = await fetch(`https://urlmypwa.01onemoto.shop/api/re-url?target=${currentTarget}`);
-            if (!response.ok) {
-              throw new Error('Gagal mengambil data dari server');
-            }
-    
-            const data = await response.json();
-    
-            if (data && data.reurl) {
-              const iframe = document.getElementById('dynamicIframe');
-              iframe.onload = hideLoadingSpinner;
-              iframe.src = data.reurl;
-            } else {
-              console.error('URL tidak ditemukan untuk target:', currentTarget);
-              hideLoadingSpinner();
-            }
-          } catch (err) {
-            console.error('Error:', err);
-            hideLoadingSpinner();
-          }
-        }
-    
-        loadIframeUrl();
-    
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
-              .then(registration => {
-                // console.log('Service Worker registered with scope:', registration.scope);
-              })
-              .catch(error => {
-                // console.error('Service Worker registration failed:', error);
-              });
-          });
-        }
-      </script> 
+  <!-- External JS -->
+  <script src="script.js"></script>
 </body>
 </html>
