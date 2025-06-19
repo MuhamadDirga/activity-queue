@@ -1,7 +1,6 @@
 const CACHE_NAME = 'PWA-QUEUE-ACTIVITY-V04';
 const urlsToCache = [
     '/',
-    '/index.html',
     '/manifest.json',
     '/src/styles.css',
     '/src/script.js',
