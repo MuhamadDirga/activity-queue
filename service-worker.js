@@ -1,11 +1,12 @@
 const CACHE_NAME = 'PWA-QUEUE-ACTIVITY-V04';
 const urlsToCache = [
     '/',
+    '/index.html',
     '/manifest.json',
     '/src/styles.css',
     '/src/script.js',
-    '/assets/icons/icon-192x192.png',
-    '/assets/icons/icon-512x512.png',
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
 ];
 
 self.addEventListener("install", event => {
