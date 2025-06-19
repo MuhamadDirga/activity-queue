@@ -1,3 +1,5 @@
+import './styles.css';
+
 let spinnerTimerInterval;
 let spinnerSeconds = 0;
 
@@ -44,7 +46,8 @@ async function loadIframeUrl() {
     await clearCache();
     const currentTarget = window.location.origin;
 
-    const response = await fetch(`https://url.onemoto.shop/api/re-url?target=${currentTarget}`);
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const response = await fetch(`${apiUrl}?target=${window.location.origin}`);
     if (!response.ok) {
       throw new Error('Gagal mengambil data dari server');
     }
