@@ -1,5 +1,3 @@
-import './styles.css';
-
 let spinnerTimerInterval;
 let spinnerSeconds = 0;
 
