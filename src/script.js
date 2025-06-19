@@ -47,7 +47,7 @@ async function loadIframeUrl() {
     const currentTarget = window.location.origin;
 
     const apiUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${apiUrl}?target=${window.location.origin}`);
+    const response = await fetch(`${apiUrl}?target=${currentTarget}`);
     if (!response.ok) {
       throw new Error('Gagal mengambil data dari server');
     }
